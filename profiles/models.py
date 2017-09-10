@@ -4,6 +4,8 @@ from django.db import models
 from django.conf import settings
 from allauth.account.signals import user_logged_in, user_signed_up
 import stripe
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 # Create your models here.
 
 class profile(models.Model):
@@ -42,7 +44,7 @@ def stripeCallback(sender, request, user, **kwargs):
 	user_stripe_account, created = userStripe.objects.get_or_create(user=user)
 	if created:
 		print 'created for %s'%(user.username)			
-	if user_stripe_account.stripe_id is None or user_stripe_accounts.stripe_id == '':
+	if user_stripe_account.stripe_id is None or user_stripe_account.stripe_id == '':
 		new_stripe_id = stripe.Customer.create(email=user.email)		
 		user_stripe_account.stripe_id = new_stripe_id['id']
 		user_stripe_account.save()
